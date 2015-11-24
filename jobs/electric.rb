@@ -92,23 +92,23 @@ chrysalis = [
   { date: Date.strptime("10/1/2014", "%m/%d/%Y"), energy:323, cost:46.74 }
 ]
 
-def formatEnergy(arry)
-  arry.map{ |m| { x: m[:date].to_time.to_i, y: m[:energy]} }
+def formatEnergy(arry, residents)
+  arry.map{ |m| { x: m[:date].to_time.to_i, y: m[:energy]/residents } }
 end
 
 SCHEDULER.every "1d", first_in: 0 do |job|
   series = [
     {
       name: "Masala",
-      data: formatEnergy(masala)
+      data: formatEnergy(masala, 12)
     },
     {
       name: "Ostara",
-      data: formatEnergy(ostara)
+      data: formatEnergy(ostara, 26)
     },
     {
       name: "Chrysalis",
-      data: formatEnergy(chrysalis)
+      data: formatEnergy(chrysalis, 16)
     }
   ]
   send_event('electric', series: series  )
