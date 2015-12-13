@@ -96,6 +96,15 @@ def formatEnergy(arry, residents)
   arry.map{ |m| { x: m[:date].to_time.to_i, y: m[:energy]/residents } }
 end
 
+def send_last_electric(id, arry, count)
+  current = arry.max{|a,b| a[:date] <=> b[:date]}
+  last = arry.select{|a| a[:date].month == current[:date].month && a[:date].year == current[:date].prev_year.year }
+  dt = current[:date].strftime("%B") + ' ' + current[:date].year.to_s
+  d = { current: current[:energy]/count, moreinfo: "kWh/housemate", dataDate:dt }
+  d[:last] = last.first[:energy]/count unless last.empty?
+  send_event( id, d)
+end
+
 SCHEDULER.every "1d", first_in: 0 do |job|
   series = [
     {
@@ -112,4 +121,7 @@ SCHEDULER.every "1d", first_in: 0 do |job|
     }
   ]
   send_event('electric', series: series  )
+  send_last_electric('masala-avg-electric', masala, 12)
+  send_last_electric('chrysalis-avg-electric', chrysalis, 16)
+  send_last_electric('ostara-avg-electric', ostara, 26)
 end
