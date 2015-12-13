@@ -14,5 +14,12 @@
   </li>
 </ul>
 
+<ul class="list-linked">
+  <li data-foreach-item="items">
+    <a data-bind-href ="item.url" ><span class="label" data-bind="item.label"></span></a>
+    <span class="value" data-bind="item.value"></span>
+  </li>
+</ul>
+
 <p class="more-info" data-bind="moreinfo"></p>
 <p class="updated-at" data-bind="updatedAtMessage"></p>
